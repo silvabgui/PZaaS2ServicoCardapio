@@ -39,6 +39,8 @@ Url em produção: `https://pzaas.online/webhook/v1/lista`
 | `preco` | Preço atualizado (somente em caso de promoção) | Sim |
 | `ingredientes` | Ingredientes da pizza buscado do setor de *Estoque* | Sim |
 
+### Teste em Produção Get /v1/lista
+
 ```json
 [
     {
