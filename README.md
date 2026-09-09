@@ -32,14 +32,27 @@ Url em produção: `https://pzaas.online/webhook/v1/lista`
 
 ### Contratos
 
-| Variável | Retorno | Obrigatório |
-| :--- | :--- | :--- |
-| `nome` | Nome do sabor da pizza | Sim |
-| `preco_original` | Preço original (é alterada em caso de promoção) | Sim |
-| `preco` | Preço atualizado (somente em caso de promoção) | Sim |
-| `ingredientes` | Ingredientes da pizza buscado do setor de *Estoque* | Sim |
+| Variável | Retorno | Obrigatório | Tipo |
+| :--- | :--- | :--- | :--- |
+| `nome` | Nome do sabor da pizza | Sim | String |
+| `preco_original` | Preço original (é alterada em caso de promoção) | Sim | Number |
+| `preco` | Preço atualizado (somente em caso de promoção) | Sim | Number |
+| `ingredientes` | Ingredientes da pizza buscado do setor de *Estoque* | Sim | String |
 
-### Teste em Produção Get /v1/lista
+### Payload de Cadastro - POST /v1/cardapio
+Formato esperado no corpo da requisição para cadastrar uma nova pizza no banco:
+
+```json
+    {
+      "nome": "Calabresa",
+      "preco_original": 45,
+      "preco": 45,
+      "ingredientes": ["massa", "molho de tomate", "mussarela", "calabresa", "cebola"]
+    }
+```
+
+
+### Teste em Produção - Get /v1/lista
 
 ```json
 [
@@ -117,9 +130,18 @@ Url em produção: `https://pzaas.online/webhook/v1/lista`
 
 ### Requisições HTTP
 
-| Código HTTP | Descrição |
-| :--- | :--- |
-| 401 | Acesso Negado |
-| 404 | Recurso não encontrado |
-| 200 | Sucesso na consulta |
-| 201 | Sucesso na criação de um novo item |
+| Código HTTP | Status | Descrição |
+| :--- | :--- | :--- | 
+| 200 | Ok |Acesso Negado | Sucesso na consulta. Retorna o cardápio ou status do Healthcheck. |
+| 201 | Created |Sucesso na criação/persistência de um novo item no Redis. |
+| 401 | Unauthorized | Acesso negado. Ocorre quando a x-api-key está ausente ou inválida. |
+| 404 | Not Found | Recurso ou rota não encontrada. |
+
+### Como Consumir a API
+
+Para que outra dupla obtenha o cardápio, basta realizar uma requisição `GET` na rota `/v1/lista`. Não é necessário enviar *body*, apenas o header de autenticação.
+
+**Exemplo prático de chamada via cURL:**
+```bash
+curl -X GET "[https://pzaas.online/webhook/v1/lista](https://pzaas.online/webhook/v1/lista)" \
+     -H "x-api-key: turma2026"
